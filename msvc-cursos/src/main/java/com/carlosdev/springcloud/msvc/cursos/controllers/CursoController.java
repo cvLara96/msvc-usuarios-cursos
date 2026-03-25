@@ -1,7 +1,9 @@
 package com.carlosdev.springcloud.msvc.cursos.controllers;
 
+import com.carlosdev.springcloud.msvc.cursos.models.Usuario;
 import com.carlosdev.springcloud.msvc.cursos.models.entity.Curso;
 import com.carlosdev.springcloud.msvc.cursos.services.CursoService;
+import feign.FeignException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class CursoController {
@@ -107,6 +106,86 @@ public class CursoController {
         }
 
     }
+
+
+    //-------------------------
+
+    //Peticiones de cliente
+    //ASIGNAR
+    @PutMapping("/asignar-usuario/{cursoId}")
+    public ResponseEntity<?> asignarUsuario(@RequestBody Usuario usuario, @PathVariable Long cursoId){
+
+        //Comprobamos si esta presente tanto el usuario como el cursoId
+        Optional<Usuario> o;
+
+        try{
+            //Si existe, le asignamos el valor a la variable o
+            o = service.asignarUsuario(usuario, cursoId);
+        }catch (FeignException e){
+
+            //Si el usuario no existe, controlamos la excepcion Feign que puede saltar de la comunicacion
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje", "No existe el usuario por el id o " +
+                    "error en la comunicacion: " + e.getMessage()));
+        }
+
+        if(o.isPresent()){
+            //Si existe, devolvemos el usuario creado
+            return ResponseEntity.status(HttpStatus.CREATED).body(o.get());
+        }
+        //Si el cursoId no existe:
+        return ResponseEntity.notFound().build();
+    }
+
+    //CREAR
+    @PutMapping("/crear-usuario/{cursoId}")
+    public ResponseEntity<?> crearUsuario(@RequestBody Usuario usuario, @PathVariable Long cursoId){
+
+        //Comprobamos si esta presente tanto el usuario como el cursoId
+        Optional<Usuario> o;
+
+        try{
+            //Si existe, le asignamos el valor a la variable o
+            o = service.crearUsuario(usuario, cursoId);
+        }catch (FeignException e){
+
+            //Si el usuario no existe, controlamos la excepcion Feign que puede saltar de la comunicacion
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje", "No se pudo crear el usuario o " +
+                    "error en la comunicacion: " + e.getMessage()));
+        }
+
+        if(o.isPresent()){
+            //Si existe, devolvemos el usuario creado
+            return ResponseEntity.status(HttpStatus.CREATED).body(o.get());
+        }
+        //Si el cursoId no existe:
+        return ResponseEntity.notFound().build();
+    }
+
+    //ELIMINAR O DESASIGNAR
+    @DeleteMapping("/eliminar-usuario/{cursoId}")
+    public ResponseEntity<?> eliminarUsuario(@RequestBody Usuario usuario, @PathVariable Long cursoId){
+
+        //Comprobamos si esta presente tanto el usuario como el cursoId
+        Optional<Usuario> o;
+
+        try{
+            //Si existe, le asignamos el valor a la variable o
+            o = service.eliminarUsuario(usuario, cursoId);
+        }catch (FeignException e){
+
+            //Si el usuario no existe, controlamos la excepcion Feign que puede saltar de la comunicacion
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("mensaje", "No existe el usuario por el id o " +
+                    "error en la comunicacion: " + e.getMessage()));
+        }
+
+        if(o.isPresent()){
+            //Si existe, devolvemos el usuario eliminado
+            return ResponseEntity.status(HttpStatus.OK).body(o.get());
+        }
+        //Si el cursoId no existe:
+        return ResponseEntity.notFound().build();
+    }
+
 
     //------------------------
 
