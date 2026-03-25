@@ -21,6 +21,8 @@ public interface UsuarioService {
     //Metodo para eliminar
     void eliminar(Long id);
 
+    //Metodo para buscar por email
+    Optional<Usuario> porEmail(String email);
 
 
 }
