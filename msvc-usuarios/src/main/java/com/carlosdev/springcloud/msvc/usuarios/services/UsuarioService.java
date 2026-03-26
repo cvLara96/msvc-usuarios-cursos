@@ -24,5 +24,9 @@ public interface UsuarioService {
     //Metodo para buscar por email
     Optional<Usuario> porEmail(String email);
 
+    //Meotodo para obtener lista de usuarios por ids, es decir, recibira una
+    //lista de ids y nos devolvera la lista de usuarios con esos ids:
+    List<Usuario> listarPorIds(Iterable<Long> ids);
+
 
 }

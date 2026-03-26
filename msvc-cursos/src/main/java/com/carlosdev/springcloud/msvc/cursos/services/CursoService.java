@@ -33,4 +33,9 @@ public interface CursoService {
     //eliminarUsuario, desasigna a un usuario de un curso
     Optional<Usuario> eliminarUsuario(Usuario usuario, Long curso_id);
 
+    //Obtener un curso por id con usuarios
+    Optional<Curso> porIdConUsuarios(Long id);
+
+    //Eliminar cursoUsuario por el id
+    void eliminarCursoUsuarioPorId(Long id);
 }

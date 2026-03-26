@@ -27,7 +27,9 @@ public class CursoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> detalle(@PathVariable Long id){
-        Optional<Curso> o = service.porId(id);
+        //Optional<Curso> o = service.porId(id);
+        //Ahora utilizaremos el metodo mas completo
+        Optional<Curso> o = service.porIdConUsuarios(id);
 
         //Controlamos si existe
         if(o.isPresent()){
@@ -137,7 +139,7 @@ public class CursoController {
     }
 
     //CREAR
-    @PutMapping("/crear-usuario/{cursoId}")
+    @PostMapping("/crear-usuario/{cursoId}")
     public ResponseEntity<?> crearUsuario(@RequestBody Usuario usuario, @PathVariable Long cursoId){
 
         //Comprobamos si esta presente tanto el usuario como el cursoId
@@ -184,6 +186,14 @@ public class CursoController {
         }
         //Si el cursoId no existe:
         return ResponseEntity.notFound().build();
+    }
+
+    //DELETE CURSO USUARIO, sera llamado desde el microservicio usuarios cada vez que
+    //se elimine un usuario
+    @DeleteMapping("/eliminar-curso-usuario/{id}")
+    public ResponseEntity<?> eliminarCursoUsuarioPorId(@PathVariable Long id){
+        service.eliminarCursoUsuarioPorId(id);
+        return ResponseEntity.noContent().build();
     }
 
 

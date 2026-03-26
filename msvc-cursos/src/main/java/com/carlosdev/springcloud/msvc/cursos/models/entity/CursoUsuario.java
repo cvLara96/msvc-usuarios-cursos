@@ -35,6 +35,10 @@ public class CursoUsuario {
     }
 
     //Sobreescribimos el metodo equals para la eliminacion de objetos
+    //Con el equals normal, se recorreria el listado y aunque tuviesen el mismo
+    //id no lo eliminaria ya que solo compararia la direccion de memoria, sobreescribiendo
+    //el metodo equals conseguimos que profundice mas en cada uno de los valores que
+    //revisa al recorrer el listado
     @Override
     public boolean equals(Object obj) {
         if(this == obj){

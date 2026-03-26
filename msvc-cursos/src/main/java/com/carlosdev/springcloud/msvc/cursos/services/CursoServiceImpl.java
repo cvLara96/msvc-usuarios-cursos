@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CursoServiceImpl implements CursoService{
@@ -131,5 +132,45 @@ public class CursoServiceImpl implements CursoService{
 
         //Si no esta presente el curso, devolvemos un empty:
         return Optional.empty();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<Curso> porIdConUsuarios(Long id) {
+
+        //Obtenemos el curso para ver si esta presente
+        Optional<Curso> o = repository.findById(id);
+        if(o.isPresent()){
+
+            //Si esta presente, obtenemos el curso
+            Curso curso = o.get();
+
+            //validamos para asegurarnos que la lista de ids no este vacia
+            if(!curso.getCursoUsuarios().isEmpty()){
+
+                //si NO esta vacio, obtenemos los ids
+                //utilizamos stream para recorrer el listado que da getCursoUsuarios()
+                //utilizamos el metodo map de stream, por cada elemento de cursoUsuario devolvemos el id:
+                List<Long> ids = curso.getCursoUsuarios()
+                        .stream().map(cu -> cu.getUsuarioId())
+                        //Como el resultado debe ser una lista, utilizamos collect para convertirlo
+                        .collect(Collectors.toList());
+                //A continuacion obtenemos del microservicio usuarios la lista de usuarios
+                List<Usuario> usuarios = client.obtenerAlumnosPorCurso(ids);
+                //establecemos los usuarios al curso
+                curso.setUsuarios(usuarios);
+            }
+
+            //Devolvemos el curso modificado
+            return Optional.of(curso);
+        }
+
+        return Optional.empty();
+    }
+
+    @Override
+    @Transactional
+    public void eliminarCursoUsuarioPorId(Long id) {
+        repository.eliminarCursoUsuarioPorId(id);
     }
 }

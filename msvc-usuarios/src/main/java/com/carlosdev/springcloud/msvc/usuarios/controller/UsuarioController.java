@@ -45,6 +45,12 @@ public class UsuarioController {
         }
     }
 
+    //GET USUARIOS POR IDS
+    @GetMapping("/usuarios-por-curso")
+    public ResponseEntity<?> obtenerAlumnosPorCurso(@RequestParam List<Long> ids){
+        return ResponseEntity.ok(service.listarPorIds(ids));
+    }
+
     //POST
     //Añadimos @Valid y BindingResult result para validar, debe ir despues del REQUEST BODY
     @PostMapping
