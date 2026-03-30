@@ -20,10 +20,11 @@ public class UsuarioController {
 
     //GET
     @GetMapping //Dejamos la url raiz por defecto
-    public List<Usuario> listar(){
+    public Map <String, List<Usuario>> listar(){
 
         //Gracias a rest controller la respuesta sera en formato json
-        return service.listar();
+        //return service.listar();
+        return Collections.singletonMap("usuarios", service.listar());
     }
 
     //GET POR ID
